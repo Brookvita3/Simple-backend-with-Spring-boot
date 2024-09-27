@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,6 +22,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
+
 public class SecurityConfig {
 
     private final String[] GET_PUBLIC_URL = {"/auth/token", "/auth/introspect"
@@ -38,9 +41,6 @@ public class SecurityConfig {
                 request
                         .requestMatchers(HttpMethod.GET, GET_PUBLIC_URL).permitAll()
                         .requestMatchers(HttpMethod.POST, POST_PUBLIC_URL).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users")
-//                            .hasAuthority("ROLE_ADMIN")
-                            .hasRole(Roles.ADMIN.name())
                         .requestMatchers(HttpMethod.GET, "/users/{userId}")
                             .hasAnyRole(Roles.ADMIN.name(), Roles.USER.name())
                         .anyRequest().authenticated());

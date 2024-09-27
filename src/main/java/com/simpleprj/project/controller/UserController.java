@@ -39,7 +39,7 @@ public class UserController {
 
         var authentication =  SecurityContextHolder.getContext().getAuthentication();
 
-        log.info("username: {}", authentication.getName());
+        log.info("username: {}, {}", authentication.getName(), authentication.getAuthorities());
         authentication.getAuthorities().forEach(grantedAuthority -> log.info("user has roles: {}", grantedAuthority.getAuthority()));
 
         return ApiResponse.<List<User>>builder()
@@ -51,6 +51,13 @@ public class UserController {
     public ApiResponse<UserResponse> getUserById(@PathVariable String userId) {
         return ApiResponse.<UserResponse>builder()
                 .data(userService.getUserById(userId))
+                .build();
+    }
+
+    @GetMapping("/myinfo")
+    public ApiResponse<UserResponse> getMyInfo() {
+        return ApiResponse.<UserResponse>builder()
+                .data(userService.getMyInfo())
                 .build();
     }
 
