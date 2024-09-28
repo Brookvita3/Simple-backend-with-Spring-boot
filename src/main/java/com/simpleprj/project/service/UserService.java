@@ -12,11 +12,15 @@ import com.simpleprj.project.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -29,6 +33,7 @@ import java.util.List;
 
 public class UserService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;

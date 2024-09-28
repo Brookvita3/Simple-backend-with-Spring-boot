@@ -69,7 +69,7 @@ public class AuthenticationService {
                 .issuer("simpleprj.com")
                 .subject(user.getUsername())
                 .issueTime(new Date())
-                .expirationTime(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)))
+                .expirationTime(new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(10)))
                 .claim("scope", buildScope(user))
                 .build();
 

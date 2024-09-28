@@ -36,18 +36,21 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests(request ->
                 request
                         .requestMatchers(HttpMethod.GET, GET_PUBLIC_URL).permitAll()
                         .requestMatchers(HttpMethod.POST, POST_PUBLIC_URL).permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/{userId}")
-                            .hasAnyRole(Roles.ADMIN.name(), Roles.USER.name())
+                        .hasAnyRole(Roles.ADMIN.name(), Roles.USER.name())
                         .anyRequest().authenticated());
-        httpSecurity.oauth2ResourceServer(oAuth2 ->
-                oAuth2.jwt(jwtConfigurer -> jwtConfigurer.
-                        decoder(jwtDecoder()).
-                        jwtAuthenticationConverter(jwtAuthenticationConverter())));
+
+        httpSecurity.oauth2ResourceServer(oAuth2 -> oAuth2.jwt(jwtConfigurer -> jwtConfigurer
+                        .decoder(customjwtDecoder())
+                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+        );
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+
 
         return httpSecurity.build();
 
@@ -55,7 +58,7 @@ public class SecurityConfig {
 
     // Nimbus also in Spring Security
     @Bean
-    JwtDecoder jwtDecoder() {
+    JwtDecoder customjwtDecoder() {
         SecretKeySpec secretKeySpec = new SecretKeySpec(SECRET.getBytes(), "HS512");
         return NimbusJwtDecoder
                 .withSecretKey(secretKeySpec)

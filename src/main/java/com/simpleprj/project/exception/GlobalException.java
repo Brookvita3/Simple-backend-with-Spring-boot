@@ -2,6 +2,8 @@ package com.simpleprj.project.exception;
 
 import com.simpleprj.project.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,7 +31,21 @@ public class GlobalException {
         return ResponseEntity.badRequest().body(apiResponse);
     }
 
+    @ExceptionHandler(value = AuthorizationDeniedException.class )
+    ResponseEntity<ApiResponse<Object>> handleAuthenticationException(AuthorizationDeniedException e) {
+        ErrorCode errorCode = ErrorCode.UNAUTHENTICATED;
+        ApiResponse<Object> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(errorCode.getErrorCode());
+        apiResponse.setMessage(errorCode.getErrorMsg());
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(ApiResponse.builder()
+                        .code(errorCode.getErrorCode())
+                        .message(errorCode.getErrorMsg())
+                        .build());
+    }
 
+
+    // Handle for invalid error code key
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse<BindException>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String enumKey = e.getFieldError().getDefaultMessage();
