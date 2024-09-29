@@ -30,8 +30,10 @@ Java Spring boot 3 basic backend format with spring sercurity 6
 - Use JWT token for Authentication
 - Basic config Spring Security with request matcher and Authorization 
 
+5) Build Docker image
+
 
 ## Reference
 
-- [Khóa học lập trình Java Spring boot 3 miễn phí cho người mới (2024](https://youtube.com/playlist?list=PL2xsxmVse9IaxzE8Mght4CFltGOqcG6FC&si=gVLe5QIo30Dmv2Kg)
+- [Khóa học lập trình Java Spring boot 3 miễn phí cho người mới (2024)](https://youtube.com/playlist?list=PL2xsxmVse9IaxzE8Mght4CFltGOqcG6FC&si=gVLe5QIo30Dmv2Kg)
 
