@@ -30,7 +30,9 @@ Java Spring boot 3 basic backend format with spring sercurity 6
 - Use JWT token for Authentication
 - Basic config Spring Security with request matcher and Authorization 
 
-5) Build Docker image
+5) Create basic test base on UnitTest
+
+6) Build Docker image
 
 
 ## Reference
