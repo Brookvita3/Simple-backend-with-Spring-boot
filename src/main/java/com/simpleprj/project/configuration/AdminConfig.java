@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,10 +25,12 @@ public class AdminConfig {
     PasswordEncoder passwordEncoder;
 
     @Bean
+    @ConditionalOnProperty(prefix = "string", value = "datasource.driverClassName"
+            , havingValue = "com.mysql.cj.jdbc.Driver")
     ApplicationRunner applicationRunner(UserRepository userRepository) {
         return args -> {
             if (userRepository.findByUsername("admin").isEmpty()) {
-                var roles =  new HashSet<String>();
+                var roles = new HashSet<String>();
                 roles.add(Roles.ADMIN.name());
                 User user = User.builder()
                         .username("admin")
