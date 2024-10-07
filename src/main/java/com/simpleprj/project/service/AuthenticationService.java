@@ -69,7 +69,7 @@ public class AuthenticationService {
                 .issuer("simpleprj.com")
                 .subject(user.getUsername())
                 .issueTime(new Date())
-                .expirationTime(new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(10)))
+                .expirationTime(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)))
                 .claim("scope", buildScope(user))
                 .build();
 
@@ -104,9 +104,9 @@ public class AuthenticationService {
 
     private String buildScope(User user) {
         StringJoiner stringJoiner = new StringJoiner(" ");
-        if (user.getRoles() != null) {
-            user.getRoles().forEach(stringJoiner::add);
-        }
+//        if (user.getRoles() != null) {
+//            user.getRoles().forEach(stringJoiner::add);
+//        }
         return stringJoiner.toString();
     }
 }

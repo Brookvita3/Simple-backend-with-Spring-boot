@@ -1,6 +1,4 @@
 package com.simpleprj.project.service;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simpleprj.project.dto.request.UserCreationRequest;
 import com.simpleprj.project.dto.response.UserResponse;
 import com.simpleprj.project.entity.User;
@@ -64,7 +62,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void createUser_Validrequest_success() throws Exception {
+    void createUser_Validrequest_success() {
         //GIVEN
         when(userRepository.existsByUsername(anyString())).thenReturn(false);
         when(userRepository.save(any())).thenReturn(user);
@@ -78,9 +76,9 @@ public class UserServiceTest {
     }
 
     @Test
-    void createUser_userExist_fail() throws Exception {
+    void createUser_userExist_fail() {
         //GIVEN
-        when(userRepository.existsByUsername(anyString())).thenReturn(true);;
+        when(userRepository.existsByUsername(anyString())).thenReturn(true);
 
         //WHEN
         var appException = assertThrows(AppException.class,

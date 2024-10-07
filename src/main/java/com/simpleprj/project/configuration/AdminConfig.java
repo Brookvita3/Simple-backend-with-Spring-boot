@@ -35,7 +35,7 @@ public class AdminConfig {
                 User user = User.builder()
                         .username("admin")
                         .password(passwordEncoder.encode("admin"))
-                        .roles(roles)
+                        //.roles(roles)
                         .build();
                 userRepository.save(user);
                 log.warn("admin user has been created with default password");
