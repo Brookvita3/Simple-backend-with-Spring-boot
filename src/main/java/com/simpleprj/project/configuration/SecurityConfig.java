@@ -30,6 +30,7 @@ public class SecurityConfig {
     };
 
     private final String[] POST_PUBLIC_URL = {"/users"};
+    private final String[] PUT_PUBLIC_URL = {"/users"};
 
     @Value("${SECRET_KEY}")
     private String SECRET;
@@ -40,6 +41,9 @@ public class SecurityConfig {
                 request
                         .requestMatchers(HttpMethod.GET, GET_PUBLIC_URL).permitAll()
                         .requestMatchers(HttpMethod.POST, POST_PUBLIC_URL).permitAll()
+                        // test
+                        .requestMatchers(HttpMethod.PUT, PUT_PUBLIC_URL).permitAll()
+                        //
                         .requestMatchers(HttpMethod.GET, "/users/{userId}")
                         .hasAnyRole(Roles.ADMIN.name(), Roles.USER.name())
                         .anyRequest().authenticated());
@@ -75,7 +79,7 @@ public class SecurityConfig {
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         converter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return converter;

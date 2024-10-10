@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,7 +27,9 @@ public class UserUpdateRequest {
     @Size(min = 10, max = 10, message = "invalid phone number")
     @Pattern(regexp = "^[0-9]{10}$", message = "invalid phone number")
     String phoneNumber;
-    @Size(min = 6, max = 16, message = "at least 6 characters")
+    @Size(min = 5, max = 16, message = "at least 5 characters")
     @NotNull(message = "password cannot be null")
     String password;
+
+    List<String> roles;
 }
