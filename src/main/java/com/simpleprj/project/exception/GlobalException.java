@@ -47,13 +47,22 @@ public class GlobalException {
 
     // Handle for invalid error code key
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse<BindException>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String enumKey = e.getFieldError().getDefaultMessage();
-        ErrorCode errorCode = ErrorCode.valueOf(enumKey);
         ApiResponse<BindException> apiResponse = new ApiResponse<>();
-        apiResponse.setCode(errorCode.getErrorCode());
-        apiResponse.setMessage(errorCode.getErrorMsg());
-        return ResponseEntity.badRequest().body(apiResponse);
+        if (ErrorCode.contains(enumKey)) {
+            ErrorCode errorCode = ErrorCode.valueOf(enumKey);
+            apiResponse.setCode(errorCode.getErrorCode());
+            apiResponse.setMessage(errorCode.getErrorMsg());
+            return ResponseEntity.badRequest().body(apiResponse);
+        }
+        else {
+            apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getErrorCode());
+            apiResponse.setMessage(ErrorCode.UNCATEGORIZED_EXCEPTION.getErrorMsg());
+            return ResponseEntity.badRequest().body(apiResponse);
+        }
+
     }
 
 }

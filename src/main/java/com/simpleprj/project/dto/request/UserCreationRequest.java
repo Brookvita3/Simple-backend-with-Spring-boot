@@ -1,10 +1,13 @@
 package com.simpleprj.project.dto.request;
+import com.simpleprj.project.validator.EmailConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,6 +21,7 @@ public class UserCreationRequest {
     @Size(min = 5, message = "USERNAME_INVALID")
     String username;
     @Email(message = "Email is not valid")
+    @EmailConstraint( max = 100, message = "INVALID_EMAIL")
     @NotNull(message = "Email cannot be null")
     String email;
     @NotNull(message = "phoneNumer cannot be null")

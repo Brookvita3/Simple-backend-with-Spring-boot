@@ -1,5 +1,6 @@
 package com.simpleprj.project.exception;
 
+import com.simpleprj.project.enums.Roles;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -15,10 +16,22 @@ public enum ErrorCode {
     USERNAME_INVALID(1004, "username is invalid", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED(1005, "you are not authenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1006, "You do not have permission", HttpStatus.FORBIDDEN),
-    UNCATEGORIZED_EXCEPTION(9999, "Uncategorized exception", HttpStatus.INTERNAL_SERVER_ERROR),;
+    INVALID_EMAIL(1007, "Invalid email", HttpStatus.BAD_REQUEST),
+    UNCATEGORIZED_EXCEPTION(9999, "Uncategorized exception", HttpStatus.INTERNAL_SERVER_ERROR);
+
+
 
     private final int ErrorCode;
     private final String ErrorMsg;
     private final HttpStatus httpStatus;
+
+    public static boolean contains(String value) {
+        for (ErrorCode x : com.simpleprj.project.exception.ErrorCode.values()) {
+            if (x.name().equals(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
