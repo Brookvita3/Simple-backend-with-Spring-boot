@@ -1,7 +1,6 @@
 package com.simpleprj.project.configuration;
 
 import com.simpleprj.project.enums.Roles;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,14 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-
-import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableWebSecurity
@@ -29,11 +23,15 @@ public class SecurityConfig {
     private final String[] GET_PUBLIC_URL = {"/auth/token", "/auth/introspect"
     };
 
-    private final String[] POST_PUBLIC_URL = {"/users"};
+    private final String[] POST_PUBLIC_URL = {"/users", "/auth/logout"};
     private final String[] PUT_PUBLIC_URL = {"/users"};
 
-    @Value("${SECRET_KEY}")
-    private String SECRET;
+
+    final CustomJwtDecoder customJwtDecoder;
+
+    public SecurityConfig(CustomJwtDecoder customJwtDecoder) {
+        this.customJwtDecoder = customJwtDecoder;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -44,12 +42,11 @@ public class SecurityConfig {
                         // test
                         .requestMatchers(HttpMethod.PUT, PUT_PUBLIC_URL).permitAll()
                         //
-                        .requestMatchers(HttpMethod.GET, "/users/{userId}")
-                        .hasAnyRole(Roles.ADMIN.name(), Roles.USER.name())
+                        .requestMatchers(HttpMethod.GET, "/users/{userId}").hasAnyRole(Roles.ADMIN.name(), Roles.USER.name())
                         .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(oAuth2 -> oAuth2.jwt(jwtConfigurer -> jwtConfigurer
-                        .decoder(customjwtDecoder())
+                        .decoder(customJwtDecoder)
                         .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
         );
@@ -58,16 +55,6 @@ public class SecurityConfig {
 
         return httpSecurity.build();
 
-    }
-
-    // Nimbus also in Spring Security
-    @Bean
-    JwtDecoder customjwtDecoder() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(SECRET.getBytes(), "HS512");
-        return NimbusJwtDecoder
-                .withSecretKey(secretKeySpec)
-                .macAlgorithm(MacAlgorithm.HS512)
-                .build();
     }
 
     @Bean
