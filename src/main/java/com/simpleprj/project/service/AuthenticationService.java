@@ -7,6 +7,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.simpleprj.project.dto.request.IntroSpectRequest;
 import com.simpleprj.project.dto.request.LogoutRequest;
+import com.simpleprj.project.dto.request.RefreshRequest;
 import com.simpleprj.project.dto.response.AuthenticationResponse;
 import com.simpleprj.project.dto.response.IntrospectResponse;
 import com.simpleprj.project.entity.InvalidedJwtToken;
@@ -47,6 +48,14 @@ public class AuthenticationService {
     @Value("${SECRET_KEY}")
     private String SECRET;
 
+    @NonFinal
+    @Value("${valid_duration}")
+    private long valid_duration;
+
+    @NonFinal
+    @Value("${refresh_duration}")
+    private long refresh_duration;
+
     public AuthenticationResponse checkPassword(String username, String password) {
         var user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -74,7 +83,7 @@ public class AuthenticationService {
                 .issuer("simpleprj.com")
                 .subject(user.getUsername())
                 .issueTime(new Date())
-                .expirationTime(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)))
+                .expirationTime(new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(valid_duration)))
                 .claim("scope", buildScope(user))
                 .jwtID(UUID.randomUUID().toString())
                 .build();
@@ -152,5 +161,30 @@ public class AuthenticationService {
         }
 
         return signedJWT;
+    }
+
+    public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
+        var signedJWT = verifyToken(request.getToken());
+
+        var jid = signedJWT.getJWTClaimsSet().getJWTID();
+        var expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+        var username = signedJWT.getJWTClaimsSet().getSubject();
+
+        var invalidedJwtToken = InvalidedJwtToken.builder()
+                .expired(expirationTime)
+                .Id(jid)
+                .build();
+        invalidedJwtTokenRepository.save(invalidedJwtToken);
+
+        var user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // xac thuc token tai day
+        var token = generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(token)
+                .success(true)
+                .build();
+
+
     }
 }

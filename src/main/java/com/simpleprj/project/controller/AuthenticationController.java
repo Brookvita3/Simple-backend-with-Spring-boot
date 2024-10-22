@@ -6,6 +6,7 @@ import com.simpleprj.project.dto.ApiResponse;
 import com.simpleprj.project.dto.request.AuthenticationRequest;
 import com.simpleprj.project.dto.request.IntroSpectRequest;
 import com.simpleprj.project.dto.request.LogoutRequest;
+import com.simpleprj.project.dto.request.RefreshRequest;
 import com.simpleprj.project.dto.response.AuthenticationResponse;
 import com.simpleprj.project.dto.response.IntrospectResponse;
 import com.simpleprj.project.service.AuthenticationService;
@@ -47,6 +48,14 @@ public class AuthenticationController {
             throws ParseException, JOSEException {
         authenticationService.logout(request);
         return ApiResponse.<Void>builder().build();
+    }
+
+    @PostMapping("/refresh")
+    public ApiResponse<AuthenticationResponse> refreshToken(@RequestBody RefreshRequest request) throws ParseException, JOSEException {
+        var result = authenticationService.refreshToken(request);
+        return ApiResponse.<AuthenticationResponse>builder()
+                .data(result)
+                .build();
     }
 
 }

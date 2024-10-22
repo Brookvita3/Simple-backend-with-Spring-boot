@@ -23,7 +23,7 @@ public class SecurityConfig {
     private final String[] GET_PUBLIC_URL = {"/auth/token", "/auth/introspect"
     };
 
-    private final String[] POST_PUBLIC_URL = {"/users", "/auth/logout"};
+    private final String[] POST_PUBLIC_URL = {"/users", "/auth/logout", "auth/refresh"};
     private final String[] PUT_PUBLIC_URL = {"/users"};
 
 
